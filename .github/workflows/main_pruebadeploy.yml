@@ -60,6 +60,16 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_2CD53B0B61E94CFBB86221C4057CEDC3 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_A9962E5A2A3E4B7AB319B2CA4A859F2D }}
 
+      - name: Configure Laravel public directory
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            RESOURCE_GROUP=$(az webapp list --query "[?name=='pruebadeploy'].resourceGroup | [0]" -o tsv)
+            az webapp config set \
+              --resource-group "$RESOURCE_GROUP" \
+              --name "pruebadeploy" \
+              --startup-file "cp /home/site/wwwroot/default /etc/nginx/sites-available/default && service nginx reload"
+
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
