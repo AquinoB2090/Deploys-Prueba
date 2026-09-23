@@ -68,7 +68,7 @@ jobs:
             az webapp config set \
               --resource-group "$RESOURCE_GROUP" \
               --name "pruebadeploy" \
-              --startup-file "cp /home/site/wwwroot/default /etc/nginx/sites-available/default && service nginx reload"
+              --startup-file "mkdir -p /home/site/wwwroot/storage/framework/cache /home/site/wwwroot/storage/framework/sessions /home/site/wwwroot/storage/framework/views /home/site/wwwroot/storage/logs && chmod -R 775 /home/site/wwwroot/storage /home/site/wwwroot/bootstrap/cache && cp /home/site/wwwroot/default /etc/nginx/sites-available/default && service nginx reload"
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
