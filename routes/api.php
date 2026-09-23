@@ -13,10 +13,12 @@ Route::post('/registro', [RegistroController::class, 'store']);
 Route::get('/estudiantes', [EstudianteController::class, 'index']);
 Route::get('/estudiantes/{carnet}', [EstudianteController::class, 'show']);
 Route::post('/estudiantes', [EstudianteController::class, 'store']);
-Route::put('/estudiantes/{carnet}', [EstudianteController::class, 'update']);
+Route::match(['put', 'patch'], '/estudiantes/{carnet}', [EstudianteController::class, 'update']);
 Route::delete('/estudiantes/{carnet}', [EstudianteController::class, 'destroy']);
 
 Route::get('/misiones', [MisionController::class, 'index']);
 Route::post('/misiones', [MisionController::class, 'store']);
-Route::put('/misiones/{id}', [MisionController::class, 'update']);
+Route::match(['put', 'patch'], '/misiones/{id}', [MisionController::class, 'update']);
 Route::delete('/misiones/{id}', [MisionController::class, 'destroy']);
+
+Route::options('/{any}', fn () => response()->noContent())->where('any', '.*');
