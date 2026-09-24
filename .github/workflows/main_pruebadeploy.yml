@@ -68,7 +68,27 @@ jobs:
             az webapp config set \
               --resource-group "$RESOURCE_GROUP" \
               --name "pruebadeploy" \
-              --startup-file "mkdir -p /home/site/wwwroot/storage/framework/cache /home/site/wwwroot/storage/framework/sessions /home/site/wwwroot/storage/framework/views /home/site/wwwroot/storage/logs && chmod -R 775 /home/site/wwwroot/storage /home/site/wwwroot/bootstrap/cache && cp /home/site/wwwroot/default /etc/nginx/sites-available/default && service nginx reload"
+              --startup-file "mkdir -p /home/site/wwwroot/storage/framework/cache /home/site/wwwroot/storage/framework/sessions /home/site/wwwroot/storage/framework/views /home/site/wwwroot/storage/logs && chmod -R 775 /home/site/wwwroot/storage /home/site/wwwroot/bootstrap/cache && cd /home/site/wwwroot && php artisan optimize:clear || true && cp /home/site/wwwroot/default /etc/nginx/sites-available/default && service nginx reload"
+
+      - name: Configure Laravel app settings
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            RESOURCE_GROUP=$(az webapp list --query "[?name=='pruebadeploy'].resourceGroup | [0]" -o tsv)
+            az webapp config appsettings set \
+              --resource-group "$RESOURCE_GROUP" \
+              --name "pruebadeploy" \
+              --settings \
+                APP_ENV=production \
+                APP_DEBUG=false \
+                DB_CONNECTION=sqlsrv \
+                DB_HOST=svr-sql-ctezo.southcentralus.cloudapp.azure.com \
+                DB_PORT=1433 \
+                DB_DATABASE=db_WebDevUMG \
+                DB_USERNAME=UsuarioEncuestas \
+                DB_PASSWORD='${{ secrets.DB_PASSWORD }}' \
+                DB_ENCRYPT=yes \
+                DB_TRUST_SERVER_CERTIFICATE=true
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
