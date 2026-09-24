@@ -60,17 +60,15 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_2CD53B0B61E94CFBB86221C4057CEDC3 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_A9962E5A2A3E4B7AB319B2CA4A859F2D }}
 
-      - name: Configure Laravel public directory
-        uses: azure/cli@v2
+      - name: 'Deploy to Azure Web App'
+        uses: azure/webapps-deploy@v3
+        id: deploy-to-webapp
         with:
-          inlineScript: |
-            RESOURCE_GROUP=$(az webapp list --query "[?name=='pruebadeploy'].resourceGroup | [0]" -o tsv)
-            az webapp config set \
-              --resource-group "$RESOURCE_GROUP" \
-              --name "pruebadeploy" \
-              --startup-file "mkdir -p /home/site/wwwroot/storage/framework/cache /home/site/wwwroot/storage/framework/sessions /home/site/wwwroot/storage/framework/views /home/site/wwwroot/storage/logs && chmod -R 775 /home/site/wwwroot/storage /home/site/wwwroot/bootstrap/cache && cd /home/site/wwwroot && php artisan optimize:clear || true && cp /home/site/wwwroot/default /etc/nginx/sites-available/default && service nginx reload"
+          app-name: 'pruebadeploy'
+          slot-name: 'Production'
+          package: .
 
-      - name: Configure Laravel app settings
+      - name: Configure Laravel on Azure
         uses: azure/cli@v2
         with:
           inlineScript: |
@@ -90,11 +88,12 @@ jobs:
                 DB_ENCRYPT=yes \
                 DB_TRUST_SERVER_CERTIFICATE=true
 
-      - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v3
-        id: deploy-to-webapp
-        with:
-          app-name: 'pruebadeploy'
-          slot-name: 'Production'
-          package: .
+            az webapp config set \
+              --resource-group "$RESOURCE_GROUP" \
+              --name "pruebadeploy" \
+              --startup-file "bash /home/site/wwwroot/startup.sh"
+
+            az webapp restart \
+              --resource-group "$RESOURCE_GROUP" \
+              --name "pruebadeploy"
           
