@@ -14,7 +14,7 @@ class DashboardController extends Controller
             ->orderBy('MisionID')
             ->get();
 
-        $detalles = DB::table('DetalleMisiones')
+        $detalles = DB::table('EstudianteMisiones')
             ->get()
             ->groupBy('Carnet')
             ->map(fn ($items) => $items->keyBy('MisionID'));

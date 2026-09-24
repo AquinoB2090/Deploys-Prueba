@@ -29,7 +29,7 @@ class Estudiante extends Model
 
     public function misiones()
     {
-        return $this->belongsToMany(Mision::class, 'DetalleMisiones', 'Carnet', 'MisionID', 'Carnet', 'MisionID')
+        return $this->belongsToMany(Mision::class, 'EstudianteMisiones', 'Carnet', 'MisionID', 'Carnet', 'MisionID')
             ->withPivot('Estado');
     }
 }

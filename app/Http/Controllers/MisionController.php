@@ -59,7 +59,7 @@ class MisionController extends Controller
         }
 
         DB::transaction(function () use ($mision, $id) {
-            DB::table('DetalleMisiones')->where('MisionID', $id)->delete();
+            DB::table('EstudianteMisiones')->where('MisionID', $id)->delete();
             $mision->delete();
         });
 

@@ -31,9 +31,9 @@ class EstudianteController extends Controller
     public function store(Request $request)
     {
         $data = Validator::make($this->payload($request), [
-            'Carnet' => ['required', 'string', 'max:20', Rule::unique('Estudiantes', 'Carnet')],
-            'Nombre' => ['required', 'string', 'max:100'],
-            'Correo' => ['required', 'email', 'max:100'],
+            'Carnet' => ['required', 'string', 'max:25', Rule::unique('Estudiantes', 'Carnet')],
+            'Nombre' => ['required', 'string', 'max:150'],
+            'Correo' => ['required', 'email', 'max:150'],
         ])->validate();
 
         $estudiante = Estudiante::create($data);
@@ -50,8 +50,8 @@ class EstudianteController extends Controller
         }
 
         $data = Validator::make($this->payload($request, false), [
-            'Nombre' => ['sometimes', 'required', 'string', 'max:100'],
-            'Correo' => ['sometimes', 'required', 'email', 'max:100'],
+            'Nombre' => ['sometimes', 'required', 'string', 'max:150'],
+            'Correo' => ['sometimes', 'required', 'email', 'max:150'],
         ])->validate();
 
         if ($data === []) {
@@ -72,7 +72,7 @@ class EstudianteController extends Controller
         }
 
         DB::transaction(function () use ($estudiante, $carnet) {
-            DB::table('DetalleMisiones')->where('Carnet', $carnet)->delete();
+            DB::table('EstudianteMisiones')->where('Carnet', $carnet)->delete();
             $estudiante->delete();
         });
 

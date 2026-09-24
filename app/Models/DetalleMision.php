@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class DetalleMision extends Model
 {
-    protected $table = 'DetalleMisiones';
+    protected $table = 'EstudianteMisiones';
 
-    public $incrementing = false;
+    protected $primaryKey = 'DetalleID';
 
     public $timestamps = false;
 

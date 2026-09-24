@@ -18,12 +18,12 @@ class RegistroController extends Controller
         ];
 
         $data = Validator::make($payload, [
-            'Carnet' => ['required', 'string', 'max:20', Rule::exists('Estudiantes', 'Carnet')],
+            'Carnet' => ['required', 'string', 'max:25', Rule::exists('Estudiantes', 'Carnet')],
             'MisionID' => ['required', 'integer', Rule::exists('Misiones', 'MisionID')],
             'Estado' => ['sometimes', 'boolean'],
         ])->validate();
 
-        DB::table('DetalleMisiones')->updateOrInsert(
+        DB::table('EstudianteMisiones')->updateOrInsert(
             [
                 'Carnet' => $data['Carnet'],
                 'MisionID' => $data['MisionID'],
@@ -33,7 +33,7 @@ class RegistroController extends Controller
             ]
         );
 
-        $registro = DB::table('DetalleMisiones')
+        $registro = DB::table('EstudianteMisiones')
             ->where('Carnet', $data['Carnet'])
             ->where('MisionID', $data['MisionID'])
             ->first();
